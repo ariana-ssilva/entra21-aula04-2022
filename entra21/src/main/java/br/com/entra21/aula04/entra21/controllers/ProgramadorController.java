@@ -40,7 +40,7 @@ public class ProgramadorController {
 	public List<Programador> listAll() {
 		List<Programador> response = programadorRepository.findAll();
 		response.forEach(programador -> {
-			//setMaturidadeNivel3(programador);
+			setMaturidadeNivel3(programador);
 		});
 		return response;
 	}
@@ -50,58 +50,59 @@ public class ProgramadorController {
 	public @ResponseBody List<Programador> get(@PathVariable("id") int id) {
 		List<Programador> response = programadorRepository.findById(id).stream().toList();
 		response.forEach(programador -> {
-			//setMaturidadeNivel3(programador);
+			// setMaturidadeNivel3(programador);
 		});
 		return response;
 	}
-	
+
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
 	public @ResponseBody Programador create(@RequestBody Programador novoProgramador) {
-	Programador response = programadorRepository.save(novoProgramador);
-	return response;
+		Programador response = programadorRepository.save(novoProgramador);
+		return response;
 	}
-	
+
 	@PutMapping("/{id}")
 
 	@ResponseStatus(HttpStatus.OK)
 
 	public @ResponseBody Optional<Programador> update(@PathVariable("id") int id,
-	@RequestBody Programador programadorEditado) {
-	Programador atual = programadorRepository.findById(id).get();
-	atual.setNome(programadorEditado.getNome());
-	atual.setQtdLinguagem(programadorEditado.getQtdLinguagem());
-	programadorRepository.save(atual);
-	return programadorRepository.findById(id);
+			@RequestBody Programador programadorEditado) {
+		Programador atual = programadorRepository.findById(id).get();
+		atual.setNome(programadorEditado.getNome());
+		atual.setQtdLinguagem(programadorEditado.getQtdLinguagem());
+		programadorRepository.save(atual);
+		return programadorRepository.findById(id);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public @ResponseBody boolean delete(@PathVariable("id") int id) {
-	programadorRepository.deleteById(id);
-	return !programadorRepository.existsById(id);
+		programadorRepository.deleteById(id);
+		return !programadorRepository.existsById(id);
 	}
 
-	/*
-	 * private void setMaturidadeNivel3(Programador programador) { ArrayList<String>
-	 * headers = new ArrayList(); headers.add("Accept : application/json");
-	 * headers.add("Content-type : application/json"); ObjectMapper mapper = new
-	 * ObjectMapper(); mapper.setSerializationInclusion(Include.NON_NULL); try {
-	 * programador.setLinks(null); String nomeAtual = programador.getNome();
-	 * programador.setNome("Nome diferente"); String jsonUpdate =
-	 * mapper.writeValueAsString(programador); programador.setNome(nomeAtual);
-	 * //programador.setId(null); String jsonCreate =
-	 * mapper.writeValueAsString(programador);
-	 * 
-	 * programador.setLinks(new ArrayList<>()); programador.getLinks().add(new
-	 * ItemNivel3("GET", PATH, null, null)); programador.getLinks().add(new
-	 * ItemNivel3("GET", PATH + "/" + programador.getId(), null, null));
-	 * programador.getLinks().add(new ItemNivel3("POST", PATH, headers,
-	 * jsonCreate)); programador.getLinks().add(new ItemNivel3("PUT", PATH + "/" +
-	 * programador.getId(), headers, jsonUpdate));
-	 * 
-	 * } catch (JsonProcessingException e) { e.printStackTrace(); }
-	 * 
-	 * }
-	 */
+	private void setMaturidadeNivel3(Programador programador) {
+		ArrayList<String> headers = new ArrayList();
+		headers.add("Accept : application/json");
+		headers.add("Content-type : application/json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		try {
+			programador.setLinks(null);
+			String nomeAtual = programador.getNome();
+			programador.setNome("Nome diferente");
+			String jsonUpdate = mapper.writeValueAsString(programador);
+			programador.setNome(nomeAtual);
+			programador.setId(null);
+			String jsonCreate = mapper.writeValueAsString(programador);
+			programador.setLinks(new ArrayList<>());
+			programador.getLinks().add(new ItemNivel3("GET", PATH, null, null));
+			programador.getLinks().add(new ItemNivel3("GET", PATH + "/" + programador.getId(), null, null));
+			programador.getLinks().add(new ItemNivel3("POST", PATH, headers, jsonCreate));
+			programador.getLinks().add(new ItemNivel3("PUT", PATH + "/" + programador.getId(), headers, jsonUpdate));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
 }

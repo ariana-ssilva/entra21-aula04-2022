@@ -20,6 +20,9 @@ public class Entra21Application implements CommandLineRunner{
 
 		int result = jdbc.update(sql, "Ariana", 3);
 		
+		String sql2 = "INSERT INTO superhero (super_name, super_power) VALUES (?, ?)";
+		 int super_result = jdbc.update(sql2, "Peter Parker", "pular de prédio em prédio rs");
+		
 	}
 
 }
